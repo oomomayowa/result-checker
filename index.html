@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>my Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+<style>
+table {
+    width: 100%;
+    border-collapse: collapse;
+      }
+th, td {
+    padding: 8px; 
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+ } 
+ .gen{
+    background-color: rgb(6, 6, 44);
+    
+ }
+</style>
+</head>
+
+<body style="width:60%;" class="gen">
+        <div class="container col-lg-7 col-md-7 col-11 shadow-sm st-lg-5 st-3">
+            <div class="row">
+                
+                <h1 class="text-center text-decoration-underline text-light">STUDENT RESULT CHECKER</h1>
+                <div class="form-floating my-2">
+                    <input type="text" class="form-control"  placeholder="enter your name" id="studentName">
+                    <label for="studentName" class="ms-3">enter your full name</label>
+                </div>
+                <div class="form-floating my-2">
+                    <input type="number" class="form-control"  placeholder="enter your studentId" id="studentId">
+                    <label for="studentId" class="ms-3">enter your student id</label>
+                </div>
+                <div class="form-floating my-2">
+                    <input type="text" class="form-control"  placeholder="enter your department " id="studentDepartment">
+                    <label for="studentDepartment" class="ms-3">enter your department </label>
+                </div>
+                <div class="form-floating my-2" id="res" >
+                    <input type="number" class="form-control"   id="userResult" placeholder="Enter Your Score">
+                    <label for="userResult" class="ms-3">enter your score </label>
+                </div> 
+                <div class="my-2">
+                    <button class="btn btn-dark w-100 py-2" onclick="addStudent()">submit</button>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <table id="studentTable" class="table table-success table-striped table-bordered ">
+            </table>
+        </div>
+
+        
+  <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="staticBackdropLabel">edit details</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <label for="editedName">Name of student:</label><br>
+            <input type="text" id="editedName" name="editedName"><br>
+            <label for="editedId">Id:</label><br>
+            <input type="text" id="editedId" name="editedId"><br>
+            <label for="editedDepartment">department</label><br>
+            <input type="text" id="editedDepartment" name="editedDepartment"><br>
+            <label for="editedScore">score</label><br>
+            <input type="text" id="editedScore" name="editedScore"><br>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" onclick="update()">update</button>
+        </div>
+      </div>
+    </div>
+</div>
+<script>
+    
+    var studentArr =[];
+var editedIndex=0;
+
+function addStudent() {
+    if(studentName.value !=""){       
+        var studentObj = {
+            nameOfStudent:studentName.value,
+            IdOfStudent:studentId.value,
+            department:studentDepartment.value,
+            score: userResult.value
+        }
+        studentArr.push(studentObj)
+        studentName.value=""
+        studentId.value=""
+        studentDepartment.value=""
+        userResult.value=""
+
+        
+
+        displayStudents();
+        
+    }
+    
+}
+
+function displayStudents() {
+    studentTable.innerHTML=""
+    studentTable.innerHTML=`
+    <tr>
+         <th>S/N</th>
+         <th>student name</th>
+         <th>student Id</th>
+          <th>department </th>
+          <th>score </th>
+          <th>Grade</th>
+          <th>Action</th>
+    </tr>
+    `
+    for(i=0; i < studentArr.length; i++){
+    var grade = '';
+         if( studentArr[i].score >= 70 && studentArr[i].score <=100){
+            grade = 'A';
+         }
+         else if(studentArr[i].score >= 60 && studentArr[i].score <=69 ){
+            grade = 'B';
+         }
+         else if(studentArr[i].score >= 50 && studentArr[i].score <=59 ){
+            grade = 'C';
+         }
+         else if(studentArr[i].score >= 40 && studentArr[i].score <=49 ){
+            grade = 'D';
+         }
+         else if(studentArr[i].score >= 30 && studentArr[i].score <=39 ){
+            grade = 'E';
+         }
+         else if(studentArr[i].score >= 0 && studentArr[i].score <=29 ){
+            grade = 'F';
+         }else{
+            grade = null;
+         }
+         
+       
+        studentTable.innerHTML+=`
+        <tr>
+            <td>${i+1}</td>
+            <td>${studentArr[i].nameOfStudent}</td>
+            <td>${studentArr[i].IdOfStudent}</td>
+            <td>${studentArr[i].department}</td>
+            <td>${studentArr[i].score}</td>
+            <td>${grade}</td>
+            <td><button onclick="editOne(${i})"class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Edit</button>
+                <button onclick="deleteOne(${i})"class="btn btn-danger">Delete</button>
+                </td>
+
+        </tr>
+        
+        `
+    }
+    
+}
+
+    function editOne(index){
+        editedIndex = index;
+}
+    function deleteOne(index) {
+        studentArr.splice(index, 1)
+        displayStudents();
+
+}
+    function update(){
+        var updateObj ={
+        nameOfStudent : editedName.value,
+        studentId : editedId.value,
+        studentDepartment : editedDepartment.value,
+        score :editedScore.value
+    }
+    studentArr.splice(editedIndex, 1, updateObj);
+        displayStudents();
+}
+
+
+</script>
+</body>
+</html>
